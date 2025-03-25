@@ -29,9 +29,9 @@ df_stnum = df_stnum.dropna(subset=["Date"])
 # only get data after 2004
 df_stnum = df_stnum[df_stnum["Date"] >= "2004-01-01"]
 
-df_stnum["stnum_long"] = (df_stnum["Hi PRIOR"] + df_stnum["PRIOR 9"]) / 2
-df_stnum["stnum_short"] = (df_stnum["Lo PRIOR"] + df_stnum["PRIOR 2"]) / 2
-df_stnum["stnum"] =  (df_stnum["stnum_long"] + df_stnum["stnum_short"]) / 2
+df_stnum["stnum_long"] = (df_stnum["Hi PRIOR"] + df_stnum["PRIOR 9"]) 
+df_stnum["stnum_short"] = (df_stnum["Lo PRIOR"] + df_stnum["PRIOR 2"])
+df_stnum["stnum"] =  (df_stnum["stnum_long"] + df_stnum["stnum_short"])
 
 # Load Momentum Portfolio Returns
 df_momentum = pd.read_csv(momentum_file)

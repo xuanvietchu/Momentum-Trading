@@ -36,11 +36,11 @@ def compute_diff_statistics(data, modified):
 
 VW = True
 SKIP = False
-model_no = 7           
+model_no = 1           
 reversed = False
 
 # "returns" or "longs" or "shorts" 
-mode = "returns"
+mode = None
 modes = ["returns", "longs", "shorts"]
 
 if mode:
@@ -101,7 +101,7 @@ for mode in modes:
 
     plt.subplots_adjust(hspace=0.5)  # Increase space between subplots
 
-    # plt.savefig(f"./result/comparison_{'VW' if VW else 'EW'}_{mode}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'reversed' if reversed else ''}.png", dpi=300)
+    plt.savefig(f"./result/comparison_benchmark_{mode}.png", dpi=300)
 
     # Show the plots
     plt.show()
@@ -143,12 +143,72 @@ for mode in modes:
 
     # Create DataFrame
     df = pd.DataFrame({
-        "Metric": ["Mean", "Standard Deviation", "Minimum", "Maximum", "Number of Observations", "T-Statistic", "Sharpe Ratio", "Correlation with New", "Mean of Differences w.r.t. New", "T-Stat of Differences w.r.t. New"],
-        "Modified": [mean_modified, std_modified, min_modified, max_modified, n_modified, t_statistic_modified, sharpe_modified, "N/A", "N/A", "N/A"],
-        "Baseline": [mean_baseline, std_baseline, min_baseline, max_baseline, n_baseline, t_statistic_baseline, sharpe_baseline, correlation_base, mean_diff, t_statistic_diff],
-        "Benchmark": [mean_bench, std_bench, min_bench, max_bench, n_bench, t_statistic_bench, sharpe_bench, correlation_bench, mean_diff_bench, t_statistic_diff_bench],
-        "Market": [mean_market, std_market, min_market, max_market, n_market, t_statistic_market, sharpe_market, correlation_market, mean_diff_market, t_statistic_diff_market],
-        "Riskless": [mean_riskless, std_riskless, min_riskless, max_riskless, n_riskless, t_statistic_riskless, "N/A", correlation_riskless, mean_diff_riskless, t_statistic_diff_riskless]
+        "Metric": [
+            "Mean",
+            "Standard Deviation",
+            "Minimum",
+            "Maximum",
+            "Number of Observations",
+            "T-Statistic",
+            "Sharpe Ratio",
+            "Correlation with New",
+            "Mean of Differences w.r.t. New",
+            "T-Stat of Differences w.r.t. New"],
+        "Modified": [
+            mean_modified,
+            std_modified,
+            min_modified,
+            max_modified,
+            n_modified,
+            t_statistic_modified,
+            sharpe_modified,
+            "N/A",
+            "N/A",
+            "N/A"],
+        "Baseline": [
+            mean_baseline,
+            std_baseline,
+            min_baseline,
+            max_baseline,
+            n_baseline,
+            t_statistic_baseline,
+            sharpe_baseline,
+            correlation_base,
+            mean_diff,
+            t_statistic_diff],
+        "Benchmark": [
+            mean_bench,
+            std_bench,
+            min_bench,
+            max_bench,
+            n_bench,
+            t_statistic_bench,
+            sharpe_bench,
+            correlation_bench,
+            mean_diff_bench,
+            t_statistic_diff_bench],
+        "Market": [
+            mean_market,
+            std_market,
+            min_market,
+            max_market,
+            n_market,
+            t_statistic_market,
+            sharpe_market,
+            correlation_market,
+            mean_diff_market,
+            t_statistic_diff_market],
+        "Riskless": [
+            mean_riskless,
+            std_riskless,
+            min_riskless,
+            max_riskless,
+            n_riskless,
+            t_statistic_riskless,
+            "N/A",
+            correlation_riskless,
+            mean_diff_riskless,
+            t_statistic_diff_riskless]
     })
 
     # Print the table

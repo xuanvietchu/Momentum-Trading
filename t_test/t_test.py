@@ -5,10 +5,18 @@ import matplotlib.pyplot as plt
 import datetime
 from dateutil.relativedelta import relativedelta
 
+def compute_statistics(data):
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0, ddof=1)
+    min_val = np.min(data, axis=0)
+    max_val = np.max(data, axis=0)
+    n = data.shape[0]
+
+    return mean, std, min_val, max_val, n
 
 VW = True
 SKIP = False
-model_no = 7           
+model_no = 1           
 reversed = False
 
 # "returns" or "longs" or "shorts" 
@@ -78,11 +86,8 @@ for mode in modes:
 
 
     # Compute statistics
-    mean_baseline, mean_modified = np.mean(baseline), np.mean(modified)
-    std_baseline, std_modified = np.std(baseline, ddof=1), np.std(modified, ddof=1)
-    min_baseline, min_modified = np.min(baseline), np.min(modified)
-    max_baseline, max_modified = np.max(baseline), np.max(modified)
-    n_baseline, n_modified = len(baseline), len(modified)
+    mean_modified, std_modified, min_modified, max_modified, n_modified = compute_statistics(modified)
+    mean_baseline, std_baseline, min_baseline, max_baseline, n_baseline = compute_statistics(baseline)
 
     # Compute return differences
     differences = modified - baseline

@@ -41,6 +41,9 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         "shorts_stdev": [],
         "stnum": [],
     }
+    R2s = []
+    corr_buys = []
+    corr_sells = []
     
     while start_date in df_by_date:
         # Define holding period end date
@@ -106,12 +109,10 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         proxy_period['ln_analysts'] = np.log1p(proxy_period['NUMEST'])
         proxy_period['ln_ME'] = np.log(proxy_period['ME'])
 
-        if model_no == 7:
-            proxy_period['1/P'] = 1 / abs(proxy_period['PRC'])
-
         if model_no == 1:
             X = proxy_period[['ln_ME', 'NasdaqDummy']]
         elif model_no == 7:
+            proxy_period['1/P'] = 1 / abs(proxy_period['PRC'])
             X = proxy_period[['ln_ME', 'NasdaqDummy', '1/P', 'past_variance', 'past_return', 'R1', 'R2', 'R3', 'R4']]
 
         y = proxy_period['ln_analysts']
@@ -123,6 +124,7 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         
         rmse = np.sqrt(mean_squared_error(y, y_pred))
         r2 = r2_score(y, y_pred)
+        R2s.append(r2)
         
         # --- Visualization ---
         # plt.figure(figsize=(10, 6))
@@ -182,6 +184,18 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
             sell['weight'] = 1 / len(sell)
         buy = buy.set_index("NCUSIP")
         sell = sell.set_index("NCUSIP")
+        
+        # compare residuals with returns of 6 months later
+        buy['RET_temp'] = buy['RET'].shift(-6)
+        sell['RET_temp'] = sell['RET'].shift(-6)
+        corr_buy = buy['residuals'].corr(buy['RET_temp'])
+        corr_sell = sell['residuals'].corr(sell['RET_temp']) 
+        # drop
+        buy = buy.drop(columns=['RET_temp'])
+        sell = sell.drop(columns=['RET_temp'])
+
+        corr_buys.append(corr_buy)    
+        corr_sells.append(corr_sell)  
         
         current_date = start_date
 
@@ -243,13 +257,65 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
     
     print(f"Completed: VW={VW}, Model={model_no}, Reversed={reversed}")
 
+    return R2s, corr_buys, corr_sells
+
 def run_all(start_time):
     df_proxy, df, df_by_date = load_data()
     
+    R = []
+    CB = []
+    CS = []
+    start_date = '2004-01'
+    dates = []
+    dates.append(start_date)
+    while start_date in df_by_date:
+        end_date = (pd.to_datetime(start_date) + pd.DateOffset(months=6)).strftime('%Y-%m')
+        dates.append(end_date)
+        start_date = end_date
     for VW in [True]:
         for model_no in [1, 7]:
             for reversed in [False]:
-                run_model(df_proxy, df, df_by_date, VW, model_no, reversed, start_time)
+                R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, VW, model_no, reversed, start_time)
+                R.append(R2s)
+                CB.append(corr_buys)
+                CS.append(corr_sells)
+    
+    # plot R2s
+    plt.figure(figsize=(10, 6))
+    for i, R2s in enumerate(R):
+        plt.plot(dates[1:], R2s, label=f"VW, Model {1 if i ==0 else 7}")
+    plt.xlabel("Period")
+    plt.ylabel("R2")
+    plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    plt.legend()
+    plt.title("R2 for models over time")
+    plt.savefig('./result/R2.png')
+    plt.show()
+    # save 
+
+    # plot corr_buys
+    # plt.figure(figsize=(10, 6))
+    # for i, corr_buys in enumerate(CB):
+    #     plt.plot(dates[1:], corr_buys, label=f"VW, Model {1 if i ==0 else 7}")
+    #     print(f"Model {1 if i ==0 else 7}: ", np.mean(corr_buys))
+    # plt.xlabel("Period")
+    # plt.ylabel("Correlation")
+    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    # plt.legend()
+    # plt.title("Correlation between residuals and returns for buys")
+    # plt.show()
+
+    # plot corr_sells
+    # plt.figure(figsize=(10, 6))
+    # for i, corr_sells in enumerate(CS):
+    #     plt.plot(dates[1:], corr_sells, label=f"VW, Model {1 if i ==0 else 7}")
+    #     print(f"Model {1 if i ==0 else 7}: ", np.mean(corr_sells))
+    # plt.xlabel("Period")
+    # plt.ylabel("Correlation")
+    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
+    # plt.legend()
+    # plt.title("Correlation between residuals and returns for sells")
+    # plt.show()
 
 if __name__ == "__main__":
     start_time = time.time()
