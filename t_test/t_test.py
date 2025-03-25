@@ -51,7 +51,7 @@ for mode in modes:
     axes[0].plot(dates, baseline, label="Baseline", linestyle="--", color="blue")
     axes[0].plot(dates, modified, label="Modified", linestyle="-", color="red")
     axes[0].set_xlabel("Date")
-    axes[0].set_ylabel("Returns")
+    axes[0].set_ylabel("Returns (%)")
     axes[0].set_title(f"New vs. Base {mode} Strategy Return Dynamics {'(VW)' if VW else '(EW)'} model {model_no} {'(reversed)' if reversed else ''}")
     axes[0].legend()
     axes[0].grid(True)

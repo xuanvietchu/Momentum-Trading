@@ -162,5 +162,6 @@ cython_debug/
 /data/
 /processed/
 /baseline_data/
+/benchmark_data/
 /vim.txt
 /result/
