@@ -43,8 +43,8 @@ while start_date in df_by_date:
     sort_col = "past_return_skip" if SKIP else "past_return"
 
     df1['portfolio'] = np.where(
-        df1[sort_col] >= np.percentile(df1[sort_col], 80), 'W',  # Winners are the top 10%
-        np.where(df1[sort_col] <= np.percentile(df1[sort_col], 20), 'L', 'N')  # Losers are the bottom 10%
+        df1[sort_col] >= np.percentile(df1[sort_col], 80), 'W',  # Winners are the top 20%
+        np.where(df1[sort_col] <= np.percentile(df1[sort_col], 20), 'L', 'N')  # Losers are the bottom 20%
     )
     # print(df1.sort_values(by='past_return')[['past_return', 'portfolio']])
 
