@@ -87,7 +87,7 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         formation_info = formation_data.reset_index()[['NCUSIP', 'TICKER',
                                                         'ME', 'NasdaqDummy',
                                                         'past_variance', 'PRC',
-                                                        'past_return', 'R1', 'R2', 'R3', 'R4']]
+                                                        'past_return', 'R1', 'R2', 'R3', 'R4', 'T-O']]
         proxy_period = proxy_period.merge(
             formation_info,
             left_on=['CUSIP', 'OFTIC'],
@@ -96,12 +96,15 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         )
         proxy_period.drop(columns=['NCUSIP', 'TICKER'], inplace=True)
 
-        if model_no == 1:
+        if model_no == 1 or model_no == 0:
             proxy_period = proxy_period.dropna(subset=['ME'])
         elif model_no == 7:
             proxy_period = proxy_period.dropna(subset=['ME', 'past_variance', 'past_return'])
             # 'R1', 'R2', 'R3', 'R4' impute with 0
             proxy_period[['R1', 'R2', 'R3', 'R4']] = proxy_period[['R1', 'R2', 'R3', 'R4']].fillna(0)
+        elif model_no == 8:
+            proxy_period = proxy_period.dropna(subset=['ME', 'T-O'])
+            proxy_period['NASD*T-O'] = proxy_period['NasdaqDummy'] * proxy_period['T-O']
 
 
         # --- Regression ---
@@ -109,11 +112,14 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         proxy_period['ln_analysts'] = np.log1p(proxy_period['NUMEST'])
         proxy_period['ln_ME'] = np.log(proxy_period['ME'])
 
-        if model_no == 1:
+        if model_no == 1 or model_no == 0:
             X = proxy_period[['ln_ME', 'NasdaqDummy']]
         elif model_no == 7:
             proxy_period['1/P'] = 1 / abs(proxy_period['PRC'])
             X = proxy_period[['ln_ME', 'NasdaqDummy', '1/P', 'past_variance', 'past_return', 'R1', 'R2', 'R3', 'R4']]
+        elif model_no == 8:
+            X = proxy_period[['ln_ME', 'NasdaqDummy', 'T-O', 'NASD*T-O']]
+        
 
         y = proxy_period['ln_analysts']
         reg = LinearRegression().fit(X, y)
@@ -124,7 +130,8 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         
         rmse = np.sqrt(mean_squared_error(y, y_pred))
         r2 = r2_score(y, y_pred)
-        R2s.append(r2)
+        if model_no != 0:
+            R2s.append(r2)
         
         # --- Visualization ---
         # plt.figure(figsize=(10, 6))
@@ -149,7 +156,11 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         # plt.show()
         
         # --- Residual Calculation & Portfolio Construction ---
-        proxy_period["residuals"] = proxy_period["NUMEST"] - np.expm1(proxy_period["predicted_ln_analysts"])
+        if model_no == 0:
+            # proxy_period["NUMEST"]  to float
+            proxy_period["residuals"] = proxy_period["NUMEST"]
+        else:
+            proxy_period["residuals"] = proxy_period["NUMEST"] - np.expm1(proxy_period["predicted_ln_analysts"])
         
         # Merge residuals into buy and sell data
         buy = buy.merge(proxy_period[['OFTIC', 'CUSIP', 'residuals']],
@@ -186,16 +197,10 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         sell = sell.set_index("NCUSIP")
         
         # compare residuals with returns of 6 months later
-        buy['RET_temp'] = buy['RET'].shift(-6)
-        sell['RET_temp'] = sell['RET'].shift(-6)
-        corr_buy = buy['residuals'].corr(buy['RET_temp'])
-        corr_sell = sell['residuals'].corr(sell['RET_temp']) 
-        # drop
-        buy = buy.drop(columns=['RET_temp'])
-        sell = sell.drop(columns=['RET_temp'])
-
-        corr_buys.append(corr_buy)    
-        corr_sells.append(corr_sell)  
+        # corr_buy = buy['residuals'].corr(buy['RET'])
+        # corr_sell = sell['residuals'].corr(sell['RET']) 
+        # corr_buys.append(corr_buy)    
+        # corr_sells.append(corr_sell)  
         
         current_date = start_date
 
@@ -273,17 +278,25 @@ def run_all(start_time):
         dates.append(end_date)
         start_date = end_date
     for VW in [True]:
-        for model_no in [1, 7]:
+        for model_no in [0, 1, 7, 8]:
             for reversed in [False]:
                 R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, VW, model_no, reversed, start_time)
-                R.append(R2s)
-                CB.append(corr_buys)
-                CS.append(corr_sells)
+                if model_no != 0:
+                    R.append(R2s)
+                    CB.append(corr_buys)
+                    CS.append(corr_sells)
     
     # plot R2s
     plt.figure(figsize=(10, 6))
     for i, R2s in enumerate(R):
-        plt.plot(dates[1:], R2s, label=f"VW, Model {1 if i ==0 else 7}")
+        if i == 0:
+            model_no = 1
+        elif i == 1:
+            model_no = 7
+        elif i == 2:
+            model_no = 8
+        plt.plot(dates[1:], R2s, label=f"VW, Model {model_no}")
+        
     plt.xlabel("Period")
     plt.ylabel("R2")
     plt.xticks(rotation=45)  # Rotate x-axis labels for better readability

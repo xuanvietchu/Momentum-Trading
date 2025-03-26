@@ -36,7 +36,7 @@ def compute_diff_statistics(data, modified):
 
 VW = True
 SKIP = False
-model_no = 1           
+model_no = 7
 reversed = False
 
 # "returns" or "longs" or "shorts" 
@@ -88,7 +88,7 @@ for mode in modes:
     axes[1].plot(dates, cumulative_baseline, label="Baseline", linestyle="--", color="blue")
     axes[1].plot(dates, cumulative_modified, label="Modified", linestyle="-", color="red")
     axes[1].plot(dates, cumulative_benchmark, label="Benchmark", linestyle="-.", color="green")
-    axes[1].plot(dates, cumulative_market, label="Market", linestyle="-", color="purple")
+    # axes[1].plot(dates, cumulative_market, label="Market", linestyle="-", color="purple")
     axes[1].set_xlabel("Date")
     axes[1].set_ylabel("Cumulative Dollar Returns")
     axes[1].set_title(f"New vs. Base {mode} Strategy Cumulative Dollar Returns")
@@ -214,5 +214,6 @@ for mode in modes:
     # Print the table
     print(f"Comparing New vs. Base {mode} Strategy {'(VW)' if VW else '(EW)'} model {model_no} {'(reversed)' if reversed else ''}")
     print(df.to_string(index=False))
+    print("\n\n")
 
 # python t_test/benchmark_test.py
