@@ -10,11 +10,11 @@ import json
 
 def load_data():
     # Load and preprocess df_proxy
-    df_proxy = pd.read_csv('./baseline_data/ibes_eps_semi_annual_by_date_2003_2024.csv').drop(columns=['Year'])
+    df_proxy = pd.read_csv('./models_data/ibes_eps_semi_annual_by_date_2003_2024.csv').drop(columns=['Year'])
     df_proxy['FPEDATS'] = pd.to_datetime(df_proxy['FPEDATS']).dt.strftime('%Y-%m')
     
     # Load and preprocess df
-    df = pd.read_csv('./baseline_data/stock_price_monthly_2003_2024.csv').dropna(subset=["past_return", "past_return_skip"])
+    df = pd.read_csv('./models_data/stock_price_monthly_2003_2024.csv').dropna(subset=["past_return", "past_return_skip"])
     df = df.set_index(['date', 'NCUSIP']).sort_index()
     
     # Pre-index formation data by date for fast lookup

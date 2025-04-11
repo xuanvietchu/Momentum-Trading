@@ -33,7 +33,7 @@ modified_path = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}
 
 
 with open(f"./result/{baseline_path}", "r") as file:
-    baseline_data = json.load(file)
+    models_data = json.load(file)
 
 with open(f"./result/{modified_path}", "r") as file:
     modified_data = json.load(file)
@@ -52,22 +52,22 @@ summary_data_detailed = {
         "Maximum V2"
     ],
     "Base Long": [
-        np.mean(baseline_data["stnum"]) // 2,
-        np.mean(baseline_data["longs"]),
-        np.mean(baseline_data["longs_stdev"]),
-        min(baseline_data["longs"]),
-        max(baseline_data["longs"]),
+        np.mean(models_data["stnum"]) // 2,
+        np.mean(models_data["longs"]),
+        np.mean(models_data["longs_stdev"]),
+        min(models_data["longs"]),
+        max(models_data["longs"]),
         np.mean(modified_data["longs"]),
         np.mean(modified_data["longs_stdev"]),
         min(modified_data["longs"]),
         max(modified_data["longs"])
     ],
     "Base Short": [
-        np.mean(baseline_data["stnum"]) // 2,
-        np.mean(baseline_data["shorts"]),
-        np.mean(baseline_data["shorts_stdev"]),
-        min(baseline_data["shorts"]),
-        max(baseline_data["shorts"]),
+        np.mean(models_data["stnum"]) // 2,
+        np.mean(models_data["shorts"]),
+        np.mean(models_data["shorts_stdev"]),
+        min(models_data["shorts"]),
+        max(models_data["shorts"]),
         np.mean(modified_data["shorts"]),
         np.mean(modified_data["shorts_stdev"]),
         min(modified_data["shorts"]),
@@ -75,10 +75,10 @@ summary_data_detailed = {
     ],
     "New Long": [
         np.mean(modified_data["stnum"]) // 2,
-        np.mean(baseline_data["longs"]),
-        np.mean(baseline_data["longs_stdev"]),
-        min(baseline_data["longs"]),
-        max(baseline_data["longs"]),
+        np.mean(models_data["longs"]),
+        np.mean(models_data["longs_stdev"]),
+        min(models_data["longs"]),
+        max(models_data["longs"]),
         np.mean(modified_data["longs"]),
         np.mean(modified_data["longs_stdev"]),
         min(modified_data["longs"]),
@@ -86,10 +86,10 @@ summary_data_detailed = {
     ],
     "New Short": [
         np.mean(modified_data["stnum"]) // 2,
-        np.mean(baseline_data["shorts"]),
-        np.mean(baseline_data["shorts_stdev"]),
-        min(baseline_data["shorts"]),
-        max(baseline_data["shorts"]),
+        np.mean(models_data["shorts"]),
+        np.mean(models_data["shorts_stdev"]),
+        min(models_data["shorts"]),
+        max(models_data["shorts"]),
         np.mean(modified_data["shorts"]),
         np.mean(modified_data["shorts_stdev"]),
         min(modified_data["shorts"]),
@@ -107,13 +107,13 @@ print(detailed_summary_df.to_string(index=False))
 
 
 # # Extract returns
-baseline_longs = np.array(baseline_data["longs"])
+baseline_longs = np.array(models_data["longs"])
 modified_longs = np.array(modified_data["longs"])
 
-baseline_shorts = np.array(baseline_data["shorts"])
+baseline_shorts = np.array(models_data["shorts"])
 modified_shorts = np.array(modified_data["shorts"])
 
-V1 = np.array(baseline_data["returns"])
+V1 = np.array(models_data["returns"])
 V2 = np.array(modified_data["returns"])
 
 dates = generate_dates(len(baseline_longs), start_date)

@@ -160,8 +160,8 @@ cython_debug/
 #.idea/
 
 /data/
-/processed/
-/baseline_data/
+/processed_data/
+/models_data/
 /benchmark_data/
 /vim.txt
 /result/

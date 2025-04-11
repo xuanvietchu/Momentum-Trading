@@ -1,6 +1,6 @@
 start_date: '2004-01'       # Start date for the analysis
-run_all: False               # Run every data flag with VW TRUE and SKIP FALSE
-verbose: True               # Verbose flag for detailed output
+run_all: True               # Run every data flag with VW TRUE and SKIP FALSE
+verbose: False               # Verbose flag for detailed output
 
 VW: True                    # Value-weighted flag
 SKIP: False                 # Skip flag

@@ -13,7 +13,7 @@ if __name__ == "__main__":
     start = time.time()
 
     # Load and preprocess data
-    df = pd.read_csv('.\\baseline_data\\stock_price_monthly_2003_2024.csv')
+    df = pd.read_csv('.\\models_data\\stock_price_monthly_2003_2024.csv')
     df = df.dropna(subset=["past_return", "past_return_skip"])
 
     # Set multi-index on ['date', 'NCUSIP'] and sort for efficient slicing
