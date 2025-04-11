@@ -50,7 +50,6 @@ if __name__ == "__main__":
             df1[sort_col] >= np.percentile(df1[sort_col], 80), 'W',  # Winners are the top 20%
             np.where(df1[sort_col] <= np.percentile(df1[sort_col], 20), 'L', 'N')  # Losers are the bottom 20%
         )
-        # print(df1.sort_values(by='past_return')[['past_return', 'portfolio']])
 
         # Select winners and losers portfolios
         buy = df1[df1['portfolio'] == 'W'].copy()
@@ -59,9 +58,6 @@ if __name__ == "__main__":
         # Assign weights (equal-weighted or value-weighted)
         buy['weight'] = buy['ME'] / buy['ME'].sum() if VW else 1 / len(buy)
         sell['weight'] = sell['ME'] / sell['ME'].sum() if VW else 1 / len(sell)
-
-        # print(f"Buying {len(buy)} stocks and selling {len(sell)} stocks")
-        # print(f"They are {buy.index.get_level_values('NCUSIP')} and {sell.index.get_level_values('NCUSIP')}")
 
         current_date = start_date
         test = 1
@@ -103,7 +99,8 @@ if __name__ == "__main__":
 
             color = '\033[92m' if portfolio_return > 0 else '\033[91m'
             reset = '\033[0m'
-            # print(f"{current_date} {next_date} {color}{round(portfolio_return * 100, 2)}%{reset}")
+            if config['verbose']:
+                print(f"{current_date} {next_date} {color}{round(portfolio_return * 100, 2)}%{reset}")
             
             current_date = next_date
             test *= 1 + portfolio_return

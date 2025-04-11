@@ -1,4 +1,7 @@
+# Configuration file for baseline model
+
 start_date: '2004-01'       # Start date for the analysis
 VW: True                    # Value-weighted flag
 SKIP: False                  # Skip flag
 rebalance: 6                # Rebalance frequency in months
+verbose: False                # Verbose flag for logging

@@ -8,7 +8,6 @@ import os
 import sys
 from dateutil.relativedelta import relativedelta
 
-
 def generate_dates(data_length, start_date):
     return [start_date + relativedelta(months=i) for i in range(data_length)]
 
