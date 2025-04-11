@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import LinearRegression
+import yaml
 import json
 
 def load_data():
@@ -15,9 +16,6 @@ def load_data():
     # Load and preprocess df
     df = pd.read_csv('./baseline_data/stock_price_monthly_2003_2024.csv').dropna(subset=["past_return", "past_return_skip"])
     df = df.set_index(['date', 'NCUSIP']).sort_index()
-
-    # remove bottom 20% of market cap
-    # df = df[df['ME'] > df['ME'].quantile(0.1)]
     
     # Pre-index formation data by date for fast lookup
     dates = df.index.get_level_values('date').unique()
@@ -25,13 +23,18 @@ def load_data():
     
     return df_proxy, df, df_by_date
 
-def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_time = 0):
-    SKIP = True           # Skip flag
+def run_model(df_proxy, df, df_by_date, config, start_time = 0):
+    print()
+    print(config)
+    # Configuration parameters
+    VW = config['VW']         # Value-weighted flag
+    model_no = config['model_no']  # Model number
+    reversed = config['reversed']  # Reversed flag
+    SKIP = config['SKIP']           # Skip flag
     
     # Configuration parameters
-    start_date = '2004-01'
-    rebalance_period = 6   # in months
-
+    start_date = config['start_date']  # Start date for the analysis
+    rebalance_period = config['rebalance']   # in months
     
     results = {
         "returns": [],
@@ -128,7 +131,9 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         intercept = reg.intercept_
         coefficients = reg.coef_
         formula = f"y = {intercept:.2f} + " + " + ".join([f"{coef:.2f} * {name}" for coef, name in zip(coefficients, X.columns)])
-        # print(formula)
+        if config['verbose']:
+            print(f"Regression formula for {start_date} - {end_date}:")
+            print(formula)
         beta0, beta1, beta2 = intercept, coefficients[0], coefficients[1]
         y_pred = np.maximum(reg.predict(X), 0)
         proxy_period["predicted_ln_analysts"] = y_pred
@@ -179,10 +184,6 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         else:   
             buy['portfolio'] = np.where(buy['residuals'] <= np.percentile(buy['residuals'], 10), 'W', 'N')
             sell['portfolio'] = np.where(sell['residuals'] <= np.percentile(sell['residuals'], 10), 'L', 'N')
-        
-        # Print the number of selected stocks
-        # print(f"Number of stocks in Buy Portfolio (W): {sum(buy['portfolio'] == 'W')}")
-        # print(f"Number of stocks in Sell Portfolio (L): {sum(sell['portfolio'] == 'L')}")
 
         buy = buy[buy['portfolio'] == 'W'].copy()
         sell = sell[sell['portfolio'] == 'L'].copy()
@@ -196,12 +197,6 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
             sell['weight'] = 1 / len(sell)
         buy = buy.set_index("NCUSIP")
         sell = sell.set_index("NCUSIP")
-        
-        # compare residuals with returns of 6 months later
-        # corr_buy = buy['residuals'].corr(buy['RET'])
-        # corr_sell = sell['residuals'].corr(sell['RET']) 
-        # corr_buys.append(corr_buy)    
-        # corr_sells.append(corr_sell)  
         
         current_date = start_date
 
@@ -243,15 +238,14 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
 
             color = '\033[92m' if portfolio_return > 0 else '\033[91m'
             reset = '\033[0m'
-            # print(f"{current_date} {next_date} {color}{round(portfolio_return * 100, 2)}%{reset}")
+            if config['verbose']:
+                print(f"{current_date} {next_date} {color}{round(portfolio_return * 100, 2)}%{reset}")
             
             current_date = next_date
         
         start_date = end_date  # Move to the next period
     
     # --- Summary ---
-    print("Value-weighted" if VW else "Equal-weighted")
-    print("Skip" if SKIP else "No Skip")
     print(f"Average return: {round(np.nanmean(results['returns']), 2)}%")
     print(f"Time taken: {time.time() - start_time} seconds")
 
@@ -272,6 +266,7 @@ def run_all(start_time):
     CB = []
     CS = []
     start_date = '2004-01'
+    config['start_date'] = start_date
     dates = []
     dates.append(start_date)
     while start_date in df_by_date:
@@ -279,9 +274,14 @@ def run_all(start_time):
         dates.append(end_date)
         start_date = end_date
     for VW in [True]:
+        config['VW'] = VW
+        config['SKIP'] = False
         for model_no in [0, 1, 7, 8]:
+            config['model_no'] = model_no
             for reversed in [False]:
-                R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, VW, model_no, reversed, start_time)
+                config['reversed'] = reversed
+                config['rebalance'] = 6
+                R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, config, start_time)
                 if model_no != 0:
                     R.append(R2s)
                     CB.append(corr_buys)
@@ -305,39 +305,14 @@ def run_all(start_time):
     plt.title("R2 for models over time")
     plt.savefig('./result/R2.png')
     plt.show()
-    # save 
-
-    # plot corr_buys
-    # plt.figure(figsize=(10, 6))
-    # for i, corr_buys in enumerate(CB):
-    #     plt.plot(dates[1:], corr_buys, label=f"VW, Model {1 if i ==0 else 7}")
-    #     print(f"Model {1 if i ==0 else 7}: ", np.mean(corr_buys))
-    # plt.xlabel("Period")
-    # plt.ylabel("Correlation")
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-    # plt.legend()
-    # plt.title("Correlation between residuals and returns for buys")
-    # plt.show()
-
-    # plot corr_sells
-    # plt.figure(figsize=(10, 6))
-    # for i, corr_sells in enumerate(CS):
-    #     plt.plot(dates[1:], corr_sells, label=f"VW, Model {1 if i ==0 else 7}")
-    #     print(f"Model {1 if i ==0 else 7}: ", np.mean(corr_sells))
-    # plt.xlabel("Period")
-    # plt.ylabel("Correlation")
-    # plt.xticks(rotation=45)  # Rotate x-axis labels for better readability
-    # plt.legend()
-    # plt.title("Correlation between residuals and returns for sells")
-    # plt.show()
 
 if __name__ == "__main__":
     start_time = time.time()
-    df_proxy, df, df_by_date = load_data()
 
-    # run_model(df_proxy, df, df_by_date, True, 1, False, start_time)
-    # run_model(df_proxy, df, df_by_date, False, 1, False, start_time)
-    # run_model(df_proxy, df, df_by_date, True, 7, False, start_time)
-    # run_model(df_proxy, df, df_by_date, False, 7, False, start_time)
+    config = yaml.load(open(".\\config\\modified_config.yaml", "r"), Loader=yaml.FullLoader)
 
-    run_all(start_time)
+    if config['run_all']:
+        run_all(start_time)
+    else:
+        df_proxy, df, df_by_date = load_data()
+        run_model(df_proxy, df, df_by_date, config, start_time)

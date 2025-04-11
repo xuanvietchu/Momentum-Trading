@@ -1,0 +1,9 @@
+start_date: '2004-01'       # Start date for the analysis
+run_all: False               # Run every data flag with VW TRUE and SKIP FALSE
+verbose: True               # Verbose flag for detailed output
+
+VW: True                    # Value-weighted flag
+SKIP: False                 # Skip flag
+rebalance: 6                # Rebalance frequency in months
+model_no: 8                 # Model number (0, 1, 7, 8 )
+reversed: False             # Reversed flag
