@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
+import yaml
+import os
+import sys
 from dateutil.relativedelta import relativedelta
 
 def compute_statistics(data):
@@ -14,16 +17,20 @@ def compute_statistics(data):
 
     return mean, std, min_val, max_val, n
 
-VW = True
-SKIP = False
-model_no = 7           
-reversed = False
+config = yaml.load(open(".\\config\\test_config.yaml", "r"), Loader=yaml.FullLoader)
+print(config)
+
+VW = config['VW']  # Value-weighted or equal-weighted
+SKIP = config['SKIP']  # Skip the first month of returns
+model_no = config['model_no']  # Model number
+reversed = config['reversed']  # Reversed model
 
 # "returns" or "longs" or "shorts" 
-mode = 'shorts'
-modes = ["returns", "longs", "shorts"]
+mode = config['mode']  # Mode to be used for loading data
 
-if mode:
+if mode == 'ALL':
+    modes = ["returns", "longs", "shorts"]
+else:
     modes = [mode]
 
 for mode in modes:
@@ -44,7 +51,10 @@ for mode in modes:
     modified = np.array(modified)
 
     # Generate x-axis dates: Start from Jul 2004, increment every 1 months
-    start_date = datetime.datetime(2004, 2, 1)
+    year, month = config['start_date'].split("-")
+    year = int(year)
+    month = int(month)
+    start_date = datetime.datetime(year, month, 1)
     dates = [start_date + relativedelta(months=i) for i in range(len(baseline))]
 
     # Compute cumulative returns: Cumulative product of (1 + return)

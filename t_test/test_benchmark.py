@@ -3,6 +3,9 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
+import yaml
+import os
+import sys
 from dateutil.relativedelta import relativedelta
 
 def load_data(file, mode):
@@ -33,17 +36,20 @@ def compute_diff_statistics(data, modified):
 
     return mean_diff, std_diff, n_diff, t_statistic_diff
 
+config = yaml.load(open(".\\config\\test_config.yaml", "r"), Loader=yaml.FullLoader)
+print(config)
 
-VW = True
-SKIP = False
-model_no = 0
-reversed = False
+VW = config['VW']  # Value-weighted or equal-weighted
+SKIP = config['SKIP']  # Skip the first month of returns
+model_no = config['model_no']  # Model number
+reversed = config['reversed']  # Reversed model
 
 # "returns" or "longs" or "shorts" 
-mode = 'returns'
-modes = ["returns", "longs", "shorts"]
+mode = config['mode']  # Mode to be used for loading data
 
-if mode:
+if mode == 'ALL':
+    modes = ["returns", "longs", "shorts"]
+else:
     modes = [mode]
 
 for mode in modes:
@@ -59,8 +65,12 @@ for mode in modes:
     market = load_data(market_file, "returns")
     riskless = load_data(market_file, "riskless")
 
-    # Generate x-axis dates: Start from Jul 2004, increment every 1 months
-    start_date = datetime.datetime(2004, 2, 1)
+    # Generate x-axis dates: increment every 1 months
+    year, month = config['start_date'].split("-")
+    year = int(year)
+    month = int(month)
+    start_date = datetime.datetime(year, month, 1)
+
     dates = [start_date + relativedelta(months=i) for i in range(len(baseline))]
 
     # Compute cumulative returns: Cumulative product of (1 + return)
@@ -75,7 +85,8 @@ for mode in modes:
 
     # --- Plot 1: Return Dynamics ---
     axes[0].plot(dates, baseline, label="Baseline", linestyle="--", color="blue")
-    # axes[0].plot(dates, modified, label="Modified", linestyle="-", color="red")
+    if config['detailed']:
+        axes[0].plot(dates, modified, label="Modified", linestyle="-", color="red")
     axes[0].plot(dates, benchmark, label="Benchmark", linestyle="-.", color="green")
     # axes[0].plot(dates, market, label="Market", linestyle="-.", color="purple")
     axes[0].set_xlabel("Date")
@@ -86,9 +97,11 @@ for mode in modes:
 
     # --- Plot 2: Cumulative Dollar Returns ---
     axes[1].plot(dates, cumulative_baseline, label="Baseline", linestyle="--", color="blue")
-    # axes[1].plot(dates, cumulative_modified, label="Modified", linestyle="-", color="red")
+    if config['detailed']:
+        axes[1].plot(dates, cumulative_modified, label="Modified", linestyle="-", color="red")
     axes[1].plot(dates, cumulative_benchmark, label="Benchmark", linestyle="-.", color="green")
-    # axes[1].plot(dates, cumulative_market, label="Market", linestyle="-", color="purple")
+    if config['detailed']:
+        axes[1].plot(dates, cumulative_market, label="Market", linestyle="-", color="purple")
     axes[1].set_xlabel("Date")
     axes[1].set_ylabel("Cumulative Dollar Returns")
     axes[1].set_title(f"New vs. Base {mode} Strategy Cumulative Dollar Returns")
@@ -105,7 +118,6 @@ for mode in modes:
 
     # Show the plots
     plt.show()
-
 
     # Compute statistics
     mean_modified, std_modified, min_modified, max_modified, n_modified = compute_statistics(modified)

@@ -3,20 +3,28 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import datetime
+import yaml
+import os
+import sys
 from dateutil.relativedelta import relativedelta
-
-
-# Generate x-axis dates: Start from Jul 2004, increment every 6 months
-start_date = datetime.datetime(2004, 2, 1)
 
 
 def generate_dates(data_length, start_date):
     return [start_date + relativedelta(months=i) for i in range(data_length)]
 
-VW = True
-SKIP = False
-model_no = 0
-reversed = False
+config = yaml.load(open(".\\config\\test_config.yaml", "r"), Loader=yaml.FullLoader)
+print(config)
+
+VW = config['VW']  # Value-weighted or equal-weighted
+SKIP = config['SKIP']  # Skip the first month of returns
+model_no = config['model_no']  # Model number
+reversed = config['reversed']  # Reversed model
+
+# Generate x-axis dates: Start from Jul 2004, increment every 6 months
+year, month = config['start_date'].split("-")
+year = int(year)
+month = int(month)
+start_date = datetime.datetime(year, month, 1)
 
 
 # Load the JSON files
