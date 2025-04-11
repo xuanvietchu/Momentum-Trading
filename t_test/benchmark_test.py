@@ -36,11 +36,11 @@ def compute_diff_statistics(data, modified):
 
 VW = True
 SKIP = False
-model_no = 7
+model_no = 0
 reversed = False
 
 # "returns" or "longs" or "shorts" 
-mode = None
+mode = 'returns'
 modes = ["returns", "longs", "shorts"]
 
 if mode:
@@ -86,7 +86,7 @@ for mode in modes:
 
     # --- Plot 2: Cumulative Dollar Returns ---
     axes[1].plot(dates, cumulative_baseline, label="Baseline", linestyle="--", color="blue")
-    axes[1].plot(dates, cumulative_modified, label="Modified", linestyle="-", color="red")
+    # axes[1].plot(dates, cumulative_modified, label="Modified", linestyle="-", color="red")
     axes[1].plot(dates, cumulative_benchmark, label="Benchmark", linestyle="-.", color="green")
     # axes[1].plot(dates, cumulative_market, label="Market", linestyle="-", color="purple")
     axes[1].set_xlabel("Date")
@@ -101,7 +101,7 @@ for mode in modes:
 
     plt.subplots_adjust(hspace=0.5)  # Increase space between subplots
 
-    plt.savefig(f"./result/comparison_benchmark_{mode}.png", dpi=300)
+    plt.savefig(f"./result/comparison_benchmark_{mode}_model{model_no}_{'(reversed)' if reversed else ''}.png", dpi=300)
 
     # Show the plots
     plt.show()

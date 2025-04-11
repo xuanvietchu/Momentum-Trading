@@ -16,11 +16,11 @@ def compute_statistics(data):
 
 VW = True
 SKIP = False
-model_no = 1           
+model_no = 7           
 reversed = False
 
 # "returns" or "longs" or "shorts" 
-mode = None
+mode = 'shorts'
 modes = ["returns", "longs", "shorts"]
 
 if mode:

@@ -26,7 +26,7 @@ def load_data():
     return df_proxy, df, df_by_date
 
 def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_time = 0):
-    SKIP = False           # Skip flag
+    SKIP = True           # Skip flag
     
     # Configuration parameters
     start_date = '2004-01'
@@ -60,6 +60,7 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         # Extract buy and sell groups and reset index for merging later
         buy = formation_data[formation_data['portfolio'] == 'W'].reset_index().copy()
         sell = formation_data[formation_data['portfolio'] == 'L'].reset_index().copy()
+        
         
         # Unique identifier pairs from formation data
         unique_pairs = formation_data.reset_index()[['TICKER', 'NCUSIP']].drop_duplicates()
@@ -123,8 +124,12 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
 
         y = proxy_period['ln_analysts']
         reg = LinearRegression().fit(X, y)
-        # beta0 = reg.intercept_
-        # beta1, beta2, beta3 = reg.coef_
+        # # Extract coefficients
+        intercept = reg.intercept_
+        coefficients = reg.coef_
+        formula = f"y = {intercept:.2f} + " + " + ".join([f"{coef:.2f} * {name}" for coef, name in zip(coefficients, X.columns)])
+        # print(formula)
+        beta0, beta1, beta2 = intercept, coefficients[0], coefficients[1]
         y_pred = np.maximum(reg.predict(X), 0)
         proxy_period["predicted_ln_analysts"] = y_pred
         
@@ -134,7 +139,7 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
             R2s.append(r2)
         
         # --- Visualization ---
-        # plt.figure(figsize=(10, 6))
+        # plt.figure(figsize=(16, 9))
         # sns.scatterplot(x=proxy_period['ln_ME'], y=proxy_period['ln_analysts'],
         #                 hue=proxy_period['NasdaqDummy'], alpha=0.7, palette='coolwarm')
         # ln_ME_range = np.linspace(proxy_period['ln_ME'].min(), proxy_period['ln_ME'].max(), 100)
@@ -144,14 +149,10 @@ def run_model(df_proxy, df, df_by_date, VW, model_no, reversed = False, start_ti
         # # Non-Nasdaq regression line (NasdaqDummy = 0)
         # plt.plot(ln_ME_range, np.maximum(beta0 + beta1 * ln_ME_range, 0),
         #          color='blue', linewidth=2, label="Non-Nasdaq Regression")
-        # textstr = (rf"$\ln(1+\#\text{{Analysts}}) = {beta0:.4f} + {beta1:.4f}\ln(\text{{Size}}) + {beta2:.4f}\,\text{{Nasdaq}}$"
-        #            f"\nRMSE = {rmse:.4f}\nR2 = {r2:.4f}")
-        # plt.text(0.05, 0.95, textstr, transform=plt.gca().transAxes, fontsize=12,
-        #          verticalalignment='top', bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
         # plt.xlabel("ln(Size) (Market Capitalization)")
         # plt.ylabel("ln(1 + # of Analysts)")
         # plt.title(f"Linear Regression: Analysts vs. Market Capitalization {start_date} - {end_date}")
-        # plt.legend(title="Nasdaq Dummy", loc='upper left', bbox_to_anchor=(1.05, 1), borderaxespad=0)
+        # plt.legend(title="Nasdaq Dummy", loc='best', fontsize='small')
         # plt.grid(True)
         # plt.show()
         
@@ -332,7 +333,7 @@ def run_all(start_time):
 
 if __name__ == "__main__":
     start_time = time.time()
-    # df_proxy, df, df_by_date = load_data()
+    df_proxy, df, df_by_date = load_data()
 
     # run_model(df_proxy, df, df_by_date, True, 1, False, start_time)
     # run_model(df_proxy, df, df_by_date, False, 1, False, start_time)

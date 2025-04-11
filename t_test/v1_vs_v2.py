@@ -15,7 +15,7 @@ def generate_dates(data_length, start_date):
 
 VW = True
 SKIP = False
-model_no = 7
+model_no = 0
 reversed = False
 
 
@@ -105,14 +105,16 @@ modified_longs = np.array(modified_data["longs"])
 baseline_shorts = np.array(baseline_data["shorts"])
 modified_shorts = np.array(modified_data["shorts"])
 
+V1 = np.array(baseline_data["returns"])
+V2 = np.array(modified_data["returns"])
+
 dates = generate_dates(len(baseline_longs), start_date)
 
 # Create a figure with two subplots
 fig, axes = plt.subplots(nrows=2, ncols=1, figsize=(12, 12))
 
 # Plot Baseline Comparison (V1)
-axes[0].plot(dates, baseline_longs, label="Baseline longs", linestyle="--", color="blue")
-axes[0].plot(dates, baseline_shorts, label="Baseline shorts", linestyle="-", color="red")
+axes[0].plot(dates, V1, label="V1", linestyle="-", color="blue")
 axes[0].set_xlabel("Date")
 axes[0].set_ylabel("Returns")
 axes[0].set_title(f"V1 Dynamic model={model_no} ({'VW' if VW else 'EW'})")
@@ -121,8 +123,7 @@ axes[0].grid(True)
 axes[0].tick_params(axis='x', rotation=45)
 
 # Plot Modified Comparison (V2)
-axes[1].plot(dates, modified_longs, label="Modified longs", linestyle="--", color="blue")
-axes[1].plot(dates, modified_shorts, label="Modified shorts", linestyle="-", color="red")
+axes[1].plot(dates, V2, label="V2", linestyle="-", color="red")
 axes[1].set_xlabel("Date")
 axes[1].set_ylabel("Returns")
 axes[1].set_title(f"V2 Dynamic model={model_no} ({'VW' if VW else 'EW'})")
