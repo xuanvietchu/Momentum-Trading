@@ -1,5 +1,5 @@
 # Momentum Trading
-Implementation of momentum trading using U.S. market data from 2003 to 2024
+Implementation of momentum trading using U.S. market data from 2003 to 2024 
 
 More details in [Presentation slide](https://docs.google.com/presentation/d/12ly-klGXJP00pRBN3lptlji4UzezfFZwZJq_PUALpLU/edit?slide=id.g33e3490a09c_3_267#slide=id.g33e3490a09c_3_267)
 
