@@ -44,11 +44,11 @@ Model 8:
 
 The **modified strategy** outperforms the benchmark on both the **long** and **short** sides.
 
-![model 7](<./assets/model_7.png>)
+![model 7](<./assets/model_ 7.png>)
 
 The **long side** of the modified strategy also **outperforms the market** by 0.27% monthly:
 
-![model 7 long](<./assets/model_7_long.png>)
+![model 7 long](<./assets/model_ 7_long.png>)
 
 
 ## Setup Instructions
