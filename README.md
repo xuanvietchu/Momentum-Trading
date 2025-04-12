@@ -27,6 +27,7 @@ mkdir result
 
 After downloading, place the files into their respective directories so that your project structure resembles the following:
 
+
 Momentum-Trading/
 ├── benchmark_data/  
 │   ├── market.CSV  
