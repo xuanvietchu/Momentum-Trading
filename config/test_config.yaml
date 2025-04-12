@@ -7,5 +7,5 @@ SKIP: False                 # Skip flag
 model_no: 1                 # Model number (0, 1, 7, 8)
 reversed: False             # Reversed flag
 
-mode: 'returns'              # Mode 'ALL', 'returns', 'longs', 'shorts'
+mode: 'ALL'              # Mode 'ALL', 'returns', 'longs', 'shorts'
 detailed: False              # See market and modified
