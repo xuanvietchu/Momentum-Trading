@@ -27,9 +27,8 @@ mkdir result
 
 After downloading, place the files into their respective directories so that your project structure resembles the following:
 
-
+```bash
 Momentum-Trading/
-
 ├── benchmark_data/  
 │   ├── market.CSV  
 │   ├── stnum.CSV  
@@ -37,6 +36,7 @@ Momentum-Trading/
 ├── data/  
 │   ├── IBES_eps_quarters_2003_2024.csv  
 │   └── stock_price_monthly_2003_2024.csv
+```
 
 ### 🐍 For pip + virtualenv users:
 ```bash
