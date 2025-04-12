@@ -66,8 +66,8 @@ pip install -r requirements.txt
 
 Execute the following Jupyter notebooks in order to clean and prepare the data:
 
-1. Open `clean.ipynb` and run all cells.
-   > 💡 Make sure to select the `env_fin` Python kernel. If you don't see it listed, try restarting VS Code and reactivating the `env_fin` environment.
+1. Open `clean.ipynb` from the `preprocess` folder and run all cells.
+   > 💡 Make sure to select the `env_fin` Python kernel. If you don't see it listed, try reopening the `Momentum-Trading` folder with VSCode and reactivating the `env_fin` environment.
 
 2. Open `baseline_preprocess.ipynb` and run all cells.
 3. Open `proxy_preprocess.ipynb` and run all cells.
@@ -122,6 +122,10 @@ python ./t_test/test_benchmark.py
 # Compare screening variables
 python ./t_test/v1_vs_v2.py
 ```
+
+### 🙏 Acknowledgements
+
+Special thanks to **Professor Akiko Watanabe** for her guidance and support throughout the course. This project would not have been possible without her mentorship.
 
 ## Sources
 

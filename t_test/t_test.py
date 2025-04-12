@@ -132,6 +132,8 @@ for mode in modes:
     })
 
     # Print the table
+    print()
+    print()
     print(f"Comparing New vs. Base {mode} Strategy {'(VW)' if VW else '(EW)'} model {model_no} {'(flip)' if flip else ''}")
     print(df.to_string(index=False))
 
