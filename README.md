@@ -15,7 +15,31 @@ Analyst coverage is quantified using **Residual Analyst Coverage (ResAnalyst)**,
 
 `ResAnalyst = Actual Number of Analysts - Predicted (from Linear Regression)`
 
-A linear regression is fitted to model expected analyst coverage based on firm characteristics, and the residuals from this model represent the unexplained portion — i.e., **information diffusion speed** stated by Hong and Stein (1999).
+A linear regression is fitted to model expected analyst coverage based on firm characteristics, and the residuals from this model represent the unexplained portion — i.e., **information diffusion speed** stated by Hong, Lim and Stein (2000).
+
+Model 0: 
+
+`ResAnalyst = Actual Number of Analysts`
+
+Model 1: 
+
+`log(1 + Predicted) = α + β₁ × log(Size) + β₂ × Nasdaq + ε`
+
+Model 7: 
+
+`log(1 + Predicted) = α + β₁ × log(Size) + β₂ × Nasdaq + β₃ × 1/P + β₄ × Variance + β₅ × R₀ + β₆ × R₁ + β₇ × R₂ + β₈ × R₃ + β₉ × R₄ + ε`
+
+Model 8:
+`log(1 + Predicted) = α + β₁ × log(Size) + β₂ × Nasdaq + β₃ × Turnover + β₅ × Turnover × Nasdaq + ε`
+
+- `log(1 + Predicted)`: Natural log of one plus the number of predicted analysts covering the firm.
+- `log(Size)`: Natural log of the firm's market capitalization.
+- `Nasdaq`: Dummy variable equal to 1 if the firm is listed on Nasdaq; 0 otherwise.
+- `ε`: Error term.
+- `1/P`: 1 / Stock Price
+- `Variance`: Variance of the firm's monthly returns for the past year.
+- `R₀ to R₄`: Annual returns lagged by 0 to 4 years, respectively.
+- `Turnover`: Ratio of trading volume over the prior six months to total shares outstanding.
 
 ## Setup Instructions
 
