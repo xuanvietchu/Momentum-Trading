@@ -59,6 +59,13 @@ Execute the following Jupyter notebooks in order to clean and prepare the data:
 You can run these in Jupyter Notebook or any IDE that supports `.ipynb` files (e.g., VSCode, JupyterLab).
 
 ---
+If the notebooks run successfully, your project directory should now include:
+```bash
+Momentum-Trading/
+├───models_data/
+│       ibes_eps_semi_annual_by_date_2003_2024.csv
+│       stock_price_monthly_2003_2024.csv
+```
 
 ### Step 2: Configure the Model (Optional)
 
