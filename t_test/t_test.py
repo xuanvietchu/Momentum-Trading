@@ -23,7 +23,7 @@ print(config)
 VW = config['VW']  # Value-weighted or equal-weighted
 SKIP = config['SKIP']  # Skip the first month of returns
 model_no = config['model_no']  # Model number
-reversed = config['reversed']  # Reversed model
+flip = config['flip']  # flip model
 
 # "returns" or "longs" or "shorts" 
 mode = config['mode']  # Mode to be used for loading data
@@ -35,7 +35,7 @@ else:
 
 for mode in modes:
     baseline_file = f"baseline_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}.json"
-    modified_file = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'reversed' if reversed else ''}.json"
+    modified_file = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'flip' if flip else ''}.json"
 
     # Load the data
     with open(f"./result/{baseline_file}", "r") as f:
@@ -70,7 +70,7 @@ for mode in modes:
     axes[0].plot(dates, modified, label="Modified", linestyle="-", color="red")
     axes[0].set_xlabel("Date")
     axes[0].set_ylabel("Returns (%)")
-    axes[0].set_title(f"New vs. Base {mode} Strategy Return Dynamics {'(VW)' if VW else '(EW)'} model {model_no} {'(reversed)' if reversed else ''}")
+    axes[0].set_title(f"New vs. Base {mode} Strategy Return Dynamics {'(VW)' if VW else '(EW)'} model {model_no} {'(flip)' if flip else ''}")
     axes[0].legend()
     axes[0].grid(True)
 
@@ -89,7 +89,7 @@ for mode in modes:
 
     plt.subplots_adjust(hspace=0.5)  # Increase space between subplots
 
-    plt.savefig(f"./result/comparison_{'VW' if VW else 'EW'}_{mode}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'reversed' if reversed else ''}.png", dpi=300)
+    plt.savefig(f"./result/comparison_{'VW' if VW else 'EW'}_{mode}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'flip' if flip else ''}.png", dpi=300)
 
     # Show the plots
     plt.show()
@@ -132,7 +132,7 @@ for mode in modes:
     })
 
     # Print the table
-    print(f"Comparing New vs. Base {mode} Strategy {'(VW)' if VW else '(EW)'} model {model_no} {'(reversed)' if reversed else ''}")
+    print(f"Comparing New vs. Base {mode} Strategy {'(VW)' if VW else '(EW)'} model {model_no} {'(flip)' if flip else ''}")
     print(df.to_string(index=False))
 
 # python t_test/t_test.py

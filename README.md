@@ -1,13 +1,13 @@
 # Momentum Trading
-Implementation of momentum trading using US market data from 2003 to 2024
+Implementation of momentum trading using U.S. market data from 2003 to 2024
 
-[Presentation slide](https://docs.google.com/presentation/d/12ly-klGXJP00pRBN3lptlji4UzezfFZwZJq_PUALpLU/edit?slide=id.g33e3490a09c_3_267#slide=id.g33e3490a09c_3_267)
+More details in [Presentation slide](https://docs.google.com/presentation/d/12ly-klGXJP00pRBN3lptlji4UzezfFZwZJq_PUALpLU/edit?slide=id.g33e3490a09c_3_267#slide=id.g33e3490a09c_3_267)
 
 ## 🧠 Implementation Details
 
 The system begins with a **baseline momentum strategy** that examines the past 1-year return of all publicly traded stocks in the U.S. market. It takes a **long position** in the top 20% of performers and a **short position** in the bottom 20%. The portfolio is **value-weighted** and **rebalanced every 6 months** (configurable)
 
-The **modified strategy** builds on this baseline by introducing an additional filter: it selects only stocks in the **bottom 10% of analyst coverage** (based on residual analyst coverage lagged 3-6 months) from both the long and short portfolios. This refinement results in **superior returns**.
+The **modified strategy** builds on this baseline by introducing an additional filter: it selects only stocks in the **bottom 10% of analyst coverage** (based on lagged 3-6 months residual analyst coverage) from both the long and short portfolios. This refinement results in **superior returns**.
 
 ### 📊 Residual Analyst Coverage
 

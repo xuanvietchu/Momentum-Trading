@@ -29,7 +29,7 @@ def run_model(df_proxy, df, df_by_date, config, start_time = 0):
     # Configuration parameters
     VW = config['VW']         # Value-weighted flag
     model_no = config['model_no']  # Model number
-    reversed = config['reversed']  # Reversed flag
+    flip = config['flip']  # flip flag
     SKIP = config['SKIP']           # Skip flag
     
     # Configuration parameters
@@ -178,7 +178,7 @@ def run_model(df_proxy, df, df_by_date, config, start_time = 0):
         buy = buy.dropna(subset=['residuals'])
         sell = sell.dropna(subset=['residuals'])
         
-        if reversed:
+        if flip:
             buy['portfolio'] = np.where(buy['residuals'] >= np.percentile(buy['residuals'], 90), 'W', 'N')
             sell['portfolio'] = np.where(sell['residuals'] >= np.percentile(sell['residuals'], 90), 'L', 'N')
         else:   
@@ -250,12 +250,12 @@ def run_model(df_proxy, df, df_by_date, config, start_time = 0):
     print(f"Time taken: {time.time() - start_time} seconds")
 
     # value-weighted and skip
-    file_name = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'reversed' if reversed else ''}.json"
+    file_name = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'flip' if flip else ''}.json"
     with open(f"./result/{file_name}", "w") as f:
         json.dump(results, f, indent=4)
     
     
-    print(f"Completed: VW={VW}, Model={model_no}, Reversed={reversed}")
+    print(f"Completed: VW={VW}, Model={model_no}, flip={flip}")
 
     return R2s, corr_buys, corr_sells
 
@@ -278,8 +278,8 @@ def run_all(start_time):
         config['SKIP'] = False
         for model_no in [0, 1, 7, 8]:
             config['model_no'] = model_no
-            for reversed in [False]:
-                config['reversed'] = reversed
+            for flip in [False]:
+                config['flip'] = flip
                 config['rebalance'] = 6
                 R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, config, start_time)
                 if model_no != 0:

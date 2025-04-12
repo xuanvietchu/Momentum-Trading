@@ -17,7 +17,7 @@ print(config)
 VW = config['VW']  # Value-weighted or equal-weighted
 SKIP = config['SKIP']  # Skip the first month of returns
 model_no = config['model_no']  # Model number
-reversed = config['reversed']  # Reversed model
+flip = config['flip']  # flip model
 
 # Generate x-axis dates: Start from Jul 2004, increment every 6 months
 year, month = config['start_date'].split("-")
@@ -28,7 +28,7 @@ start_date = datetime.datetime(year, month, 1)
 
 # Load the JSON files
 baseline_path = f"baseline_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}.json"
-modified_path = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'reversed' if reversed else ''}.json"
+modified_path = f"modified_{'VW' if VW else 'EW'}_{'skip' if SKIP else 'noskip'}_model{model_no}_{'flip' if flip else ''}.json"
 
 
 with open(f"./result/{baseline_path}", "r") as file:

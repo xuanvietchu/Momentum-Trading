@@ -1,11 +1,11 @@
 # Configuration file for every tests
 
-start_date: '2004-02'       # + 1 month after the modified strategy
+start_date: '2004-02'       # + 1 month after the modified/baseline strategy
 
 VW: True                    # Value-weighted flag
 SKIP: False                 # Skip flag
 model_no: 1                 # Model number (0, 1, 7, 8)
-reversed: False             # Reversed flag
+flip: False             # flip flag
 
-mode: 'ALL'              # Mode 'ALL', 'returns', 'longs', 'shorts'
-detailed: False              # See market and modified
+mode: 'ALL'                 # Mode 'ALL', 'returns', 'longs', 'shorts'
+detailed: False              # See market and modified graph
