@@ -38,7 +38,7 @@ Model 8:
 - `1/P`: 1 / Stock Price
 - `Variance`: Variance of the firm's monthly returns for the past year.
 - `R₀ to R₄`: Annual returns lagged by 0 to 4 years, respectively.
-- `Turnover`: Ratio of trading volume over the prior six months to total shares outstanding.
+- `Turnover`: Ratio of monthly trading volume to total shares outstanding.
 
 ### 📈 Result Summary
 
