@@ -13,7 +13,7 @@ The **modified strategy** builds on this baseline by introducing an additional f
 
 Analyst coverage is quantified using **Residual Analyst Coverage (ResAnalyst)**, calculated as:
 
-ResAnalyst = Actual Number of Analysts - Predicted (from Linear Regression)
+`ResAnalyst = Actual Number of Analysts - Predicted (from Linear Regression)`
 
 A linear regression is fitted to model expected analyst coverage based on firm characteristics, and the residuals from this model represent the unexplained portion — i.e., **information diffusion speed** stated by Hong and Stein (1999).
 
