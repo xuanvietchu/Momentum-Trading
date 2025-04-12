@@ -15,18 +15,15 @@ Analyst coverage is quantified using **Residual Analyst Coverage (ResAnalyst)**,
 
 `ResAnalyst = Actual Number of Analysts - Predicted (from Linear Regression)`
 
-A linear regression is fitted to model expected analyst coverage based on firm characteristics, and the residuals from this model represent the unexplained portion — i.e., **information diffusion speed** stated by Hong, Lim and Stein (2000).
+A linear regression is fitted to model expected analyst coverage based on firm characteristics, and the residuals from this model represent the unexplained portion — i.e., **information diffusion speed** as stated by Hong, Lim and Stein (2000).
 
 Model 0: 
-
-`ResAnalyst = Actual Number of Analysts`
+`ResAnalyst = Actual Number of Analysts` (no regression)
 
 Model 1: 
-
 `log(1 + Predicted) = α + β₁ × log(Size) + β₂ × Nasdaq + ε`
 
 Model 7: 
-
 `log(1 + Predicted) = α + β₁ × log(Size) + β₂ × Nasdaq + β₃ × 1/P + β₄ × Variance + β₅ × R₀ + β₆ × R₁ + β₇ × R₂ + β₈ × R₃ + β₉ × R₄ + ε`
 
 Model 8:
