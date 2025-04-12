@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import json
 
 # File paths (update if needed)
-momentum_file = "benchmark_data\\VW_benchmark.CSV"
-stnum = "benchmark_data\\stnum.CSV"
+momentum_file = "benchmark_data/VW_benchmark.CSV"
+stnum = "benchmark_data/stnum.CSV"
 
 results = {
     "returns": [],

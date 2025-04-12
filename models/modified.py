@@ -309,7 +309,7 @@ def run_all(start_time):
 if __name__ == "__main__":
     start_time = time.time()
 
-    config = yaml.load(open(".\\config\\modified_config.yaml", "r"), Loader=yaml.FullLoader)
+    config = yaml.load(open("./config/modified_config.yaml", "r"), Loader=yaml.FullLoader)
 
     if config['run_all']:
         run_all(start_time)

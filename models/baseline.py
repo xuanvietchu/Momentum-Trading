@@ -7,13 +7,13 @@ import yaml
 
 if __name__ == "__main__":
     # Load configuration from YAML file
-    config = yaml.load(open(".\\config\\baseline_config.yaml", "r"), Loader=yaml.FullLoader)
+    config = yaml.load(open("./config/baseline_config.yaml", "r"), Loader=yaml.FullLoader)
     print(config)
 
     start = time.time()
 
     # Load and preprocess data
-    df = pd.read_csv('.\\models_data\\stock_price_monthly_2003_2024.csv')
+    df = pd.read_csv('./models_data/stock_price_monthly_2003_2024.csv')
     df = df.dropna(subset=["past_return", "past_return_skip"])
 
     # Set multi-index on ['date', 'NCUSIP'] and sort for efficient slicing

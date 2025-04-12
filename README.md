@@ -29,6 +29,7 @@ After downloading, place the files into their respective directories so that you
 
 
 Momentum-Trading/
+
 ├── benchmark_data/  
 │   ├── market.CSV  
 │   ├── stnum.CSV  
@@ -76,6 +77,12 @@ python ./models/baseline.py
 
 # Run modified strategy
 python ./models/modified.py
+
+# Run benchmark
+python ./benchmark/benchmark.py
+
+# Run market
+python ./benchmark/market.py
 ```
 
 ### Step 4: Statistical Testing

@@ -7,7 +7,7 @@ results = {
     "riskless":[]
 }
 
-ff_file = "benchmark_data\market.CSV"
+ff_file = "benchmark_data/market.CSV"
 
 # Load Fama-French Research Factors
 df_ff = pd.read_csv(ff_file)
