@@ -1,6 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import json
+import numpy as np
 
 # File paths (update if needed)
 momentum_file = "benchmark_data/VW_benchmark.CSV"
@@ -102,7 +103,8 @@ def plot_returns(df, column, title):
     plt.subplots_adjust(hspace=0.5)  # Increase space between subplots
     # Show the plots
     plt.show()
-
+mean_returns = np.mean(df_momentum["Momentum Profit"])
+print(f"Average benchmark momentum monthly profit: {mean_returns}%")
 plot_returns(df_momentum, "Momentum Profit", "Benchmark Momentum Profit Over Time")
 plot_returns(df_momentum, "Winner", "Benchmark Winner Portfolio Returns")
 plot_returns(df_momentum, "Loser", "Benchmark Loser Portfolio Returns")
