@@ -259,7 +259,7 @@ def run_model(df_proxy, df, df_by_date, config, start_time = 0):
 
     return R2s, corr_buys, corr_sells
 
-def run_all(start_time):
+def run_all(start_time, main_config):
     df_proxy, df, df_by_date = load_data()
     
     R = []
@@ -273,20 +273,20 @@ def run_all(start_time):
         end_date = (pd.to_datetime(start_date) + pd.DateOffset(months=6)).strftime('%Y-%m')
         dates.append(end_date)
         start_date = end_date
-    for VW in [True]:
-        config['VW'] = VW
-        config['SKIP'] = False
-        for model_no in [0, 1, 7, 8]:
-            config['model_no'] = model_no
-            for flip in [False]:
-                config['flip'] = flip
-                config['rebalance'] = 6
-                R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, config, start_time)
-                if model_no != 0:
-                    R.append(R2s)
-                    CB.append(corr_buys)
-                    CS.append(corr_sells)
-    
+
+    config['VW'] = main_config['VW']
+    config['SKIP'] = main_config['SKIP']
+    for model_no in [0, 1, 7, 8]:
+        config['model_no'] = model_no
+        for flip in [False]:
+            config['flip'] = main_config['flip']
+            config['rebalance'] = main_config['rebalance']
+            R2s, corr_buys, corr_sells  = run_model(df_proxy, df, df_by_date, config, start_time)
+            if model_no != 0:
+                R.append(R2s)
+                CB.append(corr_buys)
+                CS.append(corr_sells)
+
     # plot R2s
     plt.figure(figsize=(10, 6))
     for i, R2s in enumerate(R):
@@ -312,7 +312,7 @@ if __name__ == "__main__":
     config = yaml.load(open("./config/modified_config.yaml", "r"), Loader=yaml.FullLoader)
 
     if config['run_all']:
-        run_all(start_time)
+        run_all(start_time, config)
     else:
         df_proxy, df, df_by_date = load_data()
         run_model(df_proxy, df, df_by_date, config, start_time)
