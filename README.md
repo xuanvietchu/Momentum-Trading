@@ -112,8 +112,8 @@ If the notebooks run successfully, your project directory should now include:
 ```bash
 Momentum-Trading/
 ├───models_data/
-│       ibes_eps_semi_annual_by_date_2003_2024.csv
-│       stock_price_monthly_2003_2024.csv
+│   ├── ibes_eps_semi_annual_by_date_2003_2024.csv
+│   └── stock_price_monthly_2003_2024.csv
 ```
 ---
 
